@@ -7,12 +7,12 @@ const routes = [
     component: () => import(/* webpackChunkName: 'list' */ '../views/CountriesList.vue'),
     children: [
       {
-        path: ':code',
+        path: '/IRONHACK-lab14-vue-wiki-countries/:code',
         name: 'details',
         component: () => import(/* webpackChunkName: 'details' */ '../views/CountryDetails.vue')
       },
       {
-        path: '',
+        path: '/IRONHACK-lab14-vue-wiki-countries/',
         name: 'Hello',
         component: () => import(/* webpackChunkName: 'details' */ '../views/Hello.vue')
       },
