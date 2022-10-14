@@ -1,6 +1,6 @@
 <template>
     <div class="column is-8">
-        <section class="section" v-if="country">
+        <section class="section" v-if="!isLoading">
             <figure class="image is-128x128">
                 <img :src="`https://flagpedia.net/data/flags/icon/72x54/${country.alpha2Code.toLowerCase()}.png`">
             </figure>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import countries from '../assets/countries.json'
+import { getCountry } from '../api'
 import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router'
 
@@ -45,32 +45,28 @@ const route = useRoute();
 
 const country = ref(undefined);
 const borders = ref(undefined);
+const isLoading = ref(true);
 
-const getCountry = (countries, code) => {
-    const ret = countries.find(country => {
-        if (country.alpha3Code === code) {
-            return country
-        }
-    })
-    return ret
-}
-
-const loadDetails = () => {
-    country.value = getCountry(countries, route.params.code);
+const loadDetails = async () => {
+    country.value = await getCountry(route.params.code);
     borders.value = country.value.borders
+
     if (borders.value.length > 0) {
-        borders.value = borders.value.map(border => getCountry(countries, border));
+        borders.value = await Promise.all(country.value.borders.map(async (border) => await getCountry(border)))
     }
+
+    isLoading.value = false;
 }
 
 onMounted(async () => {
-    loadDetails()
+    await loadDetails()
 })
 
 // Observa una variable, en esta caso el route.params.id y cuando cambia ejecuta una funcion
 // lo usaremos cuando tengamos una url con parametros y cambie el valor para actualizar los datos
-watch(() => route.params.code, newValue => {
-    loadDetails()
+watch(async () => route.params.code, async newValue => {
+    isLoading.value = true;
+    await loadDetails()
 });
 
 </script>

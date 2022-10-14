@@ -1,0 +1,1 @@
+import{_ as s,o as c,c as t,a as e}from"./index.34dd9e88.js";const o={},n={class:"column is-8"},a=e("section",{class:"section"},[e("div",{class:"title"},"Hello!"),e("div",null,"Select a country in the sidebar")],-1),l=[a];function i(_,r){return c(),t("div",n,l)}const f=s(o,[["render",i]]);export{f as default};
